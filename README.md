@@ -1,2 +1,2 @@
 # golembase-js-transformations
-A small library of object transormations for golem-base
+A small library of JavaScript object transformations for golem-base
