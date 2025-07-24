@@ -2,9 +2,9 @@
   "name": "@freckleface/golembase-js-transformations",
   "version": "1.0.0",
   "description": "A small library of JavaScript object transformations for golem-base",
-  "homepage": "https://github.com/jeffcogswell/golembase-js-transformations#readme",
+  "homepage": "https://github.com/frecklefacelabs/golembase-js-transformations#readme",
   "bugs": {
-    "url": "https://github.com/jeffcogswell/golembase-js-transformations/issues"
+    "url": "https://github.com/frecklefacelabs/golembase-js-transformations/issues"
   },
   "repository": {
     "type": "git",
