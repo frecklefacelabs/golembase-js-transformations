@@ -147,6 +147,55 @@ export const transformAnnotationsToListPOJO = (annotations: Annotations, convert
     return pojo;
 };
 
+/**
+ * Prepares a JavaScript object for storage by separating it into a main data payload
+ * and a set of searchable index annotations.
+ * @param sourceObject The object to transform.
+ * @param indexes An optional array of top-level keys from the sourceObject to create as separate annotations for indexing.
+ * @returns An object containing the stringified data and the generated annotations.
+ */
+export const prepareJSONObjectForGolem = (sourceObject: { [key: string]: any }, indexes: string[] = []): { dataAsString: string, annotations: Annotations } => {
+    const stringAnnotations: Annotation<string>[] = [];
+    const numericAnnotations: Annotation<number>[] = [];
+
+    // 1. Stringify the entire object for the main data payload.
+    const dataAsString = JSON.stringify(sourceObject);
+
+    // 2. Create annotations only for the specified indexes.
+    for (const key of indexes) {
+        // Use hasOwnProperty for safety to ensure the key belongs to the object itself.
+        if (Object.prototype.hasOwnProperty.call(sourceObject, key)) {
+            const value = sourceObject[key];
+            if (typeof value === 'number' && !isNaN(value)) {
+                numericAnnotations.push(new Annotation(key, value));
+            } else {
+                // Convert all other types to their string representation for the index.
+                stringAnnotations.push(new Annotation(key, String(value)));
+            }
+        }
+    }
+
+    return {
+        dataAsString,
+        annotations: { stringAnnotations, numericAnnotations }
+    };
+}
+
+/**
+ * Reconstructs a full JavaScript object from its stringified data representation.
+ * @param dataAsString The stringified JSON data payload.
+ * @returns The reconstructed JavaScript object.
+ */
+export const reconstructObjectFromGolem = (dataAsString: string): { [key: string]: any } => {
+    try {
+        return JSON.parse(dataAsString);
+    } catch (e) {
+        // Provide a more helpful error message for the library user.
+        throw new Error("Failed to reconstruct object: The provided data string is not valid JSON.");
+    }
+}
+
+/*
 
 // --- Example Usage for List Transformers ---
 
@@ -221,3 +270,39 @@ let listAnnot: Annotations =
 	numericAnnotations: []
 }
 
+let user = {
+  id: 10,
+  username: 'fred',
+  phones: [
+    { type: 'cell', number: '123-456-7890' },
+    { type: 'home', number: '321-555-1212' }
+  ],
+  department: 'accounting',
+  isCurrent: true
+};
+
+
+// Created with indexes username and department
+let js_annotation = [
+	{key: 'value', value: '{"username":"fred","phones":[{"type":"cell","number":"123-456-7890"},{"type":"home","number":"321-555-1212"}],"department":"accounting"}'},
+	{key: 'isCurrent', value: "true"}, // The true value gets stored as a string in the annotations
+	{key: 'id', value: 10},
+	{key: 'username', value: 'fred'},
+	{key: 'department', value: 'accounting'}
+];
+
+const result = prepareJSONObjectForGolem(user, ["id", "username", "department", "isCurrent"]);
+console.log(result.dataAsString);
+
+for (let str_annot of result.annotations.stringAnnotations) {
+	console.log(str_annot);
+}
+
+for (let num_annot of result.annotations.numericAnnotations) {
+	console.log(num_annot);
+}
+
+const reconstruct = reconstructObjectFromGolem(result.dataAsString);
+console.log(reconstruct);
+
+*/
