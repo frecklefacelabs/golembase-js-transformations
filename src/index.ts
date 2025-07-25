@@ -1,15 +1,4 @@
-/**
- * Represents a single key-value annotation.
- */
-export class Annotation<V> {
-  readonly key: string;
-  readonly value: V;
-
-  constructor(key: string, value: V) {
-    this.key = key;
-    this.value = value;
-  }
-}
+import { Annotation } from "golem-base-sdk";
 
 /**
  * An interface representing a collection of annotations, separated by type.
