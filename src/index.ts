@@ -15,7 +15,7 @@ export interface Annotations {
  * @param myobj The plain JavaScript object to transform.
  * @returns An Annotations object.
  */
-export const transformPOJOToKeyValuePairs = (myobj: Omit<any, 'entityKey'>): Annotations => {
+export const transformPOJOToAnnotations = (myobj: Omit<any, 'entityKey'>): Annotations => {
   const stringAnnotations: Annotation<string>[] = [];
   const numericAnnotations: Annotation<number>[] = [];
 
@@ -138,12 +138,13 @@ export const transformAnnotationsToListPOJO = (annotations: Annotations, convert
 
 /**
  * Prepares a JavaScript object for storage by separating it into a main data payload
+ * consisting of the stringified form of the JavaScript object
  * and a set of searchable index annotations.
  * @param sourceObject The object to transform.
  * @param indexes An optional array of top-level keys from the sourceObject to create as separate annotations for indexing.
  * @returns An object containing the stringified data and the generated annotations.
  */
-export const prepareJSONObjectForGolem = (sourceObject: { [key: string]: any }, indexes: string[] = []): { dataAsString: string, annotations: Annotations } => {
+export const transformJSONToGolemNoSQL = (sourceObject: { [key: string]: any }, indexes: string[] = []): { dataAsString: string, annotations: Annotations } => {
     const stringAnnotations: Annotation<string>[] = [];
     const numericAnnotations: Annotation<number>[] = [];
 
@@ -175,7 +176,7 @@ export const prepareJSONObjectForGolem = (sourceObject: { [key: string]: any }, 
  * @param dataAsString The stringified JSON data payload.
  * @returns The reconstructed JavaScript object.
  */
-export const reconstructObjectFromGolem = (dataAsString: string): { [key: string]: any } => {
+export const transformGolemNoSQLToJSON = (dataAsString: string): { [key: string]: any } => {
     try {
         return JSON.parse(dataAsString);
     } catch (e) {
@@ -183,6 +184,46 @@ export const reconstructObjectFromGolem = (dataAsString: string): { [key: string
         throw new Error("Failed to reconstruct object: The provided data string is not valid JSON.");
     }
 }
+
+/*
+const listObj = {
+  directors: [
+    'Christopher Nolan',
+    'Denis Villeneuve',
+    'Gareth Edwards',
+    'Robert Zemeckis',
+    'Terry Gilliam'
+  ],
+  artists: [
+    'Neil Young',
+    'Parliament',
+    'Pink Floyd',
+    'Rush',
+    'The Midnight',
+    'Vangelis',
+    'Yes'
+  ],
+  authors: [
+    'Another Author',
+    'George R. R. Martin',
+    'Jeffrey Cogswell',
+    'Neal Stephenson',
+    'William Gibson'
+  ],
+  movie_genres: [ 'dystopian', 'sci-fi', 'thriller' ],
+  music_genres: [ 'ambient', 'folk', 'funk', 'prog rock', 'synthwave' ],
+  book_genres: [ 'fantasy', 'cyberpunk', 'tech' ],
+};
+
+const result1 = transformListPOJOToAnnotations(listObj);
+
+console.log(result1);
+
+const result2 = transformAnnotationsToListPOJO(result1);
+
+console.log(result2);
+
+*/
 
 /*
 
