@@ -127,7 +127,7 @@ export const transformAnnotationsToListPOJO = (annotations: Annotations, convert
         } else {
             // Otherwise, treat as a string array.
             if (sort) {
-                stringItems.sort();
+                stringItems.sort((a, b) => a.localeCompare(b));
             }
             pojo[key] = stringItems;
         }
