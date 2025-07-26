@@ -76,7 +76,7 @@ export const transformListPOJOToAnnotations = (listObj: { [key: string]: any[] }
             // Use a copy of the array to avoid modifying the original
             let arrayToProcess = [...value];
             if (sort) {
-                arrayToProcess.sort();
+                arrayToProcess.sort((a, b) => a.localeCompare(b));
             }
             stringAnnotations.push(new Annotation(key, arrayToProcess.join(',')));
         }
